@@ -27,7 +27,7 @@ LOG_FILE_NAME = '{0}.log'.format(PROJECT_NAME)
 SECRET_KEY = 'vu#xmpvbj&e&78dlaoit1^o4@nr5aft)yisx5s9bw84i-xpzr%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
