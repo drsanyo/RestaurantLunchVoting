@@ -42,3 +42,15 @@ class ManagementApiRepository:
         finally:
             self.cursor.close()
 
+    def user_vote(self, restaurant_name, user_name):
+        try:
+            self.cursor.execute("BEGIN")
+            self.cursor.callproc("pr_user_vote", [restaurant_name, user_name])
+            votes_count = self.cursor.fetchone()
+            self.cursor.execute("COMMIT")
+            return votes_count[0]
+        except Exception as e:
+            logging.exception('Cannot vote for restaurant')
+            raise
+        finally:
+            self.cursor.close()

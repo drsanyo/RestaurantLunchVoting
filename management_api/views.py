@@ -105,3 +105,21 @@ class CurrentDayMenu(APIView):
             return Response(serializer.data)
         except Exception as e:
             return Response(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class Vote(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        restaurant_name = request.query_params.get('restaurant')
+        if not restaurant_name:
+            return Response('Restaurant name cannot be empty, please set query parameter "restaurant"',
+                            status.HTTP_400_BAD_REQUEST)
+
+        try:
+            repository = ManagementApiRepository(connection.cursor())
+            votes_count = repository.user_vote(restaurant_name, request.user.username)
+            content = {'Restaurant votes count': votes_count}
+            return Response(content)
+        except Exception as e:
+            return Response(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
