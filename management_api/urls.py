@@ -8,4 +8,5 @@ urlpatterns = [
     path('logout/', views.Logout.as_view(), name='logout'),
     path('create_restaurant/', views.CreateRestaurant.as_view(), name='CreateRestaurant'),
     path('upload_menu/', views.UploadMenu.as_view(), name='UploadMenu'),
+    path('add_employee/', views.AddEmployee.as_view(), name='AddEmployee'),
 ]

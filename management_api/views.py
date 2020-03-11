@@ -67,3 +67,27 @@ class UploadMenu(APIView):
             return Response(content)
         except Exception as e:
             return Response(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class AddEmployee(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        employee_name = request.data.get('name')
+        if not employee_name:
+            return Response('Employee name cannot be empty, please set query parameter "name"',
+                            status.HTTP_400_BAD_REQUEST)
+
+        employee_password = request.data.get('password')
+        if not employee_password:
+            return Response('Employee password cannot be empty, please set query parameter "password"',
+                            status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.create_user(
+                username=employee_name,
+                password=employee_password)
+            content = {'new user_id': user.id}
+            return Response(content)
+        except Exception as e:
+            return Response(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
