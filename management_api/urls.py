@@ -7,4 +7,5 @@ urlpatterns = [
     path('login/', obtain_auth_token, name='api_token_auth'),
     path('logout/', views.Logout.as_view(), name='logout'),
     path('create_restaurant/', views.CreateRestaurant.as_view(), name='CreateRestaurant'),
+    path('upload_menu/', views.UploadMenu.as_view(), name='UploadMenu'),
 ]
