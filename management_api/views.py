@@ -5,6 +5,8 @@ from django.db import connection
 from management_api.business_logic.repository import ManagementApiRepository
 from rest_framework import status
 from django.contrib.auth.models import User
+from management_api.models import VwCurrentDayMenu
+from management_api.serializers import VwCurrentDayMenuSerializer
 
 
 class HelloView(APIView):
@@ -89,5 +91,17 @@ class AddEmployee(APIView):
                 password=employee_password)
             content = {'new user_id': user.id}
             return Response(content)
+        except Exception as e:
+            return Response(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class CurrentDayMenu(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        try:
+            current_day_menu = VwCurrentDayMenu.objects.all()
+            serializer = VwCurrentDayMenuSerializer(current_day_menu, many=True)
+            return Response(serializer.data)
         except Exception as e:
             return Response(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)

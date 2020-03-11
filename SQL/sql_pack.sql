@@ -120,3 +120,19 @@ BEGIN
 END;
 $$;
 
+
+-- View: public.vw_current_day_menu
+
+-- DROP VIEW public.vw_current_day_menu;
+
+CREATE OR REPLACE VIEW public.vw_current_day_menu
+ AS
+ SELECT menu.menu_id AS id,
+    restaurant.rst_name,
+    menu.menu_file_body AS menu
+   FROM menu
+     JOIN restaurant ON restaurant.rst_id = menu.menu_rst_id
+  WHERE menu.menu_create_date = CURRENT_DATE;
+
+ALTER TABLE public.vw_current_day_menu
+    OWNER TO docker;
