@@ -1,21 +1,14 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from django.db import connection
-from management_api.business_logic.repository import ManagementApiRepository
-from rest_framework import status
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.db import connection
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from management_api.business_logic.repository import ManagementApiRepository
 from management_api.models import VwCurrentDayMenu
 from management_api.serializers import VwCurrentDayMenuSerializer
-from django.conf import settings
-
-
-class HelloView(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        content = {'message': 'Hello, World!'}
-        return Response(content)
 
 
 class Logout(APIView):
