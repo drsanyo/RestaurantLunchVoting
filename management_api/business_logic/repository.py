@@ -54,3 +54,16 @@ class ManagementApiRepository:
             raise
         finally:
             self.cursor.close()
+
+    def current_day_winner(self, skip_last_consecutive_working_days):
+        try:
+            self.cursor.execute("BEGIN")
+            self.cursor.callproc("pr_winner", [skip_last_consecutive_working_days])
+            winner = self.cursor.fetchone()
+            self.cursor.execute("COMMIT")
+            return winner[0]
+        except Exception as e:
+            logging.exception('Cannot find current day winner')
+            raise
+        finally:
+            self.cursor.close()

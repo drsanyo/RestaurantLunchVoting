@@ -218,3 +218,89 @@ BEGIN
     RETURN _voted_count;
 END;
 $$;
+
+
+CREATE OR REPLACE FUNCTION pr_prep_day(prm_date DATE)
+RETURNS DATE
+LANGUAGE plpgsql    
+AS $$
+BEGIN	
+	RETURN (
+	SELECT y.d AS prep_day
+	FROM  (
+		SELECT generate_series(dday - 8, dday - 1, interval '1d')::date AS d
+		FROM (SELECT prm_date AS dday) x
+		) y
+	WHERE (1=1)
+		AND extract(isodow from y.d) < 6
+	ORDER BY y.d DESC
+	LIMIT 1);
+END;
+$$;	
+
+
+CREATE OR REPLACE FUNCTION pr_winner(prm_days_before INTEGER)
+RETURNS VARCHAR
+LANGUAGE plpgsql    
+AS $$
+DECLARE
+  _date DATE = current_date;
+  _winner VARCHAR;
+BEGIN 
+	CREATE TEMPORARY TABLE IF NOT EXISTS _last_working_dates
+	(
+		working_date date
+	) ON COMMIT DROP;
+	
+	-- generate series of last n consecutive working days
+	FOR counter IN 1..prm_days_before LOOP		
+		_date = pr_prep_day(_date);
+		INSERT INTO _last_working_dates
+		VALUES(_date);
+  	END LOOP;
+	
+	CREATE TEMPORARY TABLE IF NOT EXISTS _winners
+	(
+		win varchar, 
+		win_date date, 
+		vote_count int
+	) ON COMMIT DROP;
+	
+	-- find winner for every past day
+	FOR _date IN (
+		SELECT working_date 
+		FROM _last_working_dates 
+		ORDER BY working_date) 
+	LOOP
+		INSERT INTO _winners
+		SELECT 
+			rst_name
+			, _date
+			, COUNT(rst_name) AS votes
+		FROM public.user_vote
+		JOIN restaurant ON rst_id = uv_rst_id
+		WHERE (1=1)
+			AND uv_date = _date			
+		GROUP BY rst_name
+		ORDER BY votes DESC
+		LIMIT 1;
+	END LOOP;	
+		
+	-- current day winner should not be in winners list
+	SELECT 
+		rst_name
+		, _date
+		, COUNT(rst_name) AS votes
+	INTO _winner		
+	FROM public.user_vote
+	JOIN restaurant ON rst_id = uv_rst_id
+	WHERE (1=1)
+		AND uv_date = current_date	
+		AND (rst_name NOT IN (SELECT _winners.win FROM _winners))
+	GROUP BY rst_name
+	ORDER BY votes DESC
+	LIMIT 1;
+	
+	RETURN _winner;
+END;
+$$;

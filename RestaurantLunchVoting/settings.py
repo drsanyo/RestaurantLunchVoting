@@ -17,7 +17,7 @@ import logging.config
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_NAME = os.path.basename(BASE_DIR)
 
-LOG_FILE_DIR = BASE_DIR # this should be configured via ENV_VAR
+LOG_FILE_DIR = BASE_DIR  # this should be configured via ENV_VAR
 LOG_FILE_NAME = '{0}.log'.format(PROJECT_NAME)
 
 # Quick-start development settings - unsuitable for production
@@ -160,3 +160,5 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
+
+SKIP_LAST_CONSECUTIVE_WORKING_DAYS = 3

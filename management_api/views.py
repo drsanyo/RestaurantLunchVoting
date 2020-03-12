@@ -7,6 +7,7 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from management_api.models import VwCurrentDayMenu
 from management_api.serializers import VwCurrentDayMenuSerializer
+from django.conf import settings
 
 
 class HelloView(APIView):
@@ -120,6 +121,19 @@ class Vote(APIView):
             repository = ManagementApiRepository(connection.cursor())
             votes_count = repository.user_vote(restaurant_name, request.user.username)
             content = {'Restaurant votes count': votes_count}
+            return Response(content)
+        except Exception as e:
+            return Response(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class CurrentDayWinner(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        try:
+            repository = ManagementApiRepository(connection.cursor())
+            winner = repository.current_day_winner(settings.SKIP_LAST_CONSECUTIVE_WORKING_DAYS)
+            content = {'Winner': winner}
             return Response(content)
         except Exception as e:
             return Response(str(e), status.HTTP_500_INTERNAL_SERVER_ERROR)

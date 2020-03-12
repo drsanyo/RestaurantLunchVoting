@@ -11,4 +11,5 @@ urlpatterns = [
     path('add_employee/', views.AddEmployee.as_view(), name='AddEmployee'),
     path('current_day_menu/', views.CurrentDayMenu.as_view(), name='CurrentDayMenu'),
     path('vote/', views.Vote.as_view(), name='Vote'),
+    path('current_day_winner/', views.CurrentDayWinner().as_view(), name='CurrentDayWinner'),
 ]
