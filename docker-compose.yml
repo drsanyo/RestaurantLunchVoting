@@ -1,0 +1,35 @@
+version: '3'
+
+networks:
+    bridge:
+        driver: bridge
+
+services:
+    db:
+        image: postgres
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=docker
+        ports:
+            - "5432:5432"
+        volumes:
+            - ./SQL/init.sql:/docker-entrypoint-initdb.d/init.sql
+        networks:
+            - bridge
+            
+    web:
+        build: .
+        environment:
+            - DJANGO_SUPERUSER_PASSWORD=a
+            - DJANGO_SUPERUSER_USERNAME_FIELD=a
+        command: bash -c "sleep 5 && python manage.py migrate && python manage.py createsuperuser --noinput --username a --email a@no.com && python manage.py runserver 0.0.0.0:8000"
+        volumes:
+            - .:/RestaurantLunchVoting
+        ports:
+            - "8000:8000"    
+        depends_on:
+            - db
+        networks:
+            - bridge
+        links:
+            - "db:db"

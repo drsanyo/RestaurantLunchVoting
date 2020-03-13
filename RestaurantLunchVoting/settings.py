@@ -86,7 +86,7 @@ DATABASES = {
         'NAME': 'restaurantlunchvoting',
         'USER': 'docker',
         'PASSWORD': 'docker',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
