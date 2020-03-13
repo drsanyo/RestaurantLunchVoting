@@ -7,3 +7,10 @@ Company needs internal service for its’ employees which helps them to make a d
 * Perform migration: python manage.py migrate
 * Run "sql_pack.sql" to create database structure
 * Create superuser: python manage.py createsuperuser
+
+# How to run with Docker
+* Navigate to your project dir
+* Run: docker-compose up
+    * It will run DB image, create required database with user, migrate and start project
+
+**N.B.! You still need to run "sql_pack.sql" to create database structure in any preferred way.** 
